@@ -1,3 +1,3 @@
-import AuthScreen from './AuthScreen';
+import PhoneScreen from './PhoneScreen';
 
-export { AuthScreen };
+export { PhoneScreen };

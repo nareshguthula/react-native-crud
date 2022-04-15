@@ -1,9 +1,19 @@
-import React, { useState } from 'react';
-import {ImageBackground, View, Text, StyleSheet, TouchableOpacity, TextInput, Platform, FlatList, SafeAreaView} from 'react-native';
+import React, {useState} from 'react';
+import {
+    FlatList,
+    ImageBackground,
+    Platform,
+    SafeAreaView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View
+} from 'react-native';
 
 const API_URL = Platform.OS === 'ios' ? 'http://localhost:5000' : 'http://192.168.0.230:8080';
 
-const AuthScreen = () => {
+const PhoneScreen = () => {
 
     const [company, setCompany] = useState('');
     const [model, setModel] = useState('');
@@ -27,7 +37,7 @@ const AuthScreen = () => {
             company,
             model,
         };
-        if(!isAdd) {
+        if (!isAdd) {
             payload.id = id;
         }
         fetch(`${API_URL}/${isAdd ? 'addPhone' : 'updatePhone'}`, {
@@ -37,24 +47,25 @@ const AuthScreen = () => {
             },
             body: JSON.stringify(payload),
         })
-        .then(async res => {
-            try {
-                const jsonRes = await res.json();
-                if (res.status !== 200) {
-                    setIsError(true);
-                    setMessage(jsonRes.message);
-                } else {
-                    setIsError(false);
-                    setMessage(jsonRes.message);
-                    setPhones(jsonRes.phones);
+            .then(async res => {
+                try {
+                    const jsonRes = await res.json();
+                    if (res.status !== 200) {
+                        setIsError(true);
+                        setMessage(jsonRes.message);
+                    } else {
+                        setIsError(false);
+                        setMessage(jsonRes.message);
+                        setPhones(jsonRes.phones);
+                    }
+                } catch (err) {
+                    console.log(err);
                 }
-            } catch (err) {
+                ;
+            })
+            .catch(err => {
                 console.log(err);
-            };
-        })
-        .catch(err => {
-            console.log(err);
-        });
+            });
     };
 
     const deletePhone = (id) => {
@@ -74,7 +85,8 @@ const AuthScreen = () => {
                     }
                 } catch (err) {
                     console.log(err);
-                };
+                }
+                ;
             })
             .catch(err => {
                 console.log(err);
@@ -86,7 +98,7 @@ const AuthScreen = () => {
         return status + message;
     }
 
-    const Phone = ({ company, model, id}) => (
+    const Phone = ({company, model, id}) => (
         <View style={styles.item}>
             <View>
                 <Text style={styles.company}>{'Company: ' + company}</Text>
@@ -102,23 +114,23 @@ const AuthScreen = () => {
     );
 
 
-    const renderPhone = ({ item }) => (
+    const renderPhone = ({item}) => (
         <Phone company={item.company} model={item.model} id={item.id}/>
     );
 
     return (
         <ImageBackground source={require('../public/images/app-background.jpg')} style={styles.image}
-                         imageStyle={{ opacity: 0.7}}>
+                         imageStyle={{opacity: 0.7}}>
             <View style={styles.card}>
                 <Text style={styles.heading}>{isAdd ? 'Add Phone' : 'Update Phone'}</Text>
                 <View style={styles.form}>
                     <View style={styles.inputs}>
-                        <TextInput style={styles.input} value={company} placeholder="Company" onChangeText={setCompany}></TextInput>
-                        <TextInput style={styles.input} value={model} placeholder="Model" onChangeText={setModel}></TextInput>
-                        <Text style={[styles.message, {color: isError ? 'red' : 'green'}]}>{message ? getMessage() : null}</Text>
-                        {/*<TouchableOpacity style={styles.button} onPress={onSubmitHandler}>
-                            <Text style={styles.buttonText}>Done</Text>
-                        </TouchableOpacity>*/}
+                        <TextInput style={styles.input} value={company} placeholder="Company"
+                                   onChangeText={setCompany}></TextInput>
+                        <TextInput style={styles.input} value={model} placeholder="Model"
+                                   onChangeText={setModel}></TextInput>
+                        <Text
+                            style={[styles.message, {color: isError ? 'red' : 'green'}]}>{message ? getMessage() : null}</Text>
                         <TouchableOpacity style={styles.button} onPress={onSubmitHandler}>
                             <Text style={styles.buttonText}>{isAdd ? 'Add Phone' : 'Update Phone'}</Text>
                         </TouchableOpacity>
@@ -237,4 +249,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default AuthScreen;
+export default PhoneScreen;
